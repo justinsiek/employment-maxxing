@@ -1,0 +1,51 @@
+
+Zoox is a company focused on developing autonomous vehicles, and they are seeking a Machine Learning Engineer Intern for their Simulation team. The intern will work on various teams to create high fidelity synthetic data, develop models for simulating road agent behavior, and improve the fidelity of sensor simulation.
+Artificial Intelligence (AI)
+Transportation
+Robotics
+Autonomous Vehicles
+Machine Learning
+
+Responsibilities
+Extend our simulation pipeline to reproduce dynamic actors accurately in simulation
+Research and evaluate various reconstruction algorithms and integrate the most promising of them into our simulation framework
+Develop and improve models that realistically simulate the behavior of other road agents like pedestrians and vehicles
+Leverage software engineering and machine learning skills to ensure these simulated agents exhibit a wide range of plausible and representative human behaviors
+Help create high fidelity synthetic data for training and testing AV AI, as well as real time sensor data for hardware-in-the-loop simulation
+Develop 3D ML models and training datasets for 3D sensor simulation using modern machine learning architectures
+Collaborate with the Sensors, Perception, and Validation teams to evaluate and iteratively improve the fidelity of sensor simulation
+Help create agentic AI systems capable of generating novel scenarios for validating the safety and performance of Zoox's autonomous driving technology
+Leverage your software engineering and machine learning skills to gather data, fine-tune existing diffusion / foundation models, add new capabilities to our LLM agent, and evaluate success against customer requirements
+Help build scenario generation and analysis tools used to evaluate robot behavior via simulation
+Leverage your software engineering and machine learning skills to recreate high-fidelity simulation scenarios from recorded real-world driving data
+
+Qualification
+check
+Represents the skills you have
+Find out how your skills align with this job's requirements. If anything seems off, you can easily click on the tags to select or unselect skills to reflect your actual expertise.
+
+checkC++
+checkPython
+checkGenerative AI techniques
+Gaussian Splatting
+Neural Radiance Fields
+Game development
+Simulation frameworks
+3D game logic
+checkLinear algebra
+checkLarge-scale code projects
+Required
+Currently working towards a B.S., M.S., Ph.D., or advanced degree in a relevant engineering program
+Must be returning to school to continue your education upon completing this internship
+Good academic standing
+Able to commit to a 12-week internship beginning in May or June of 2026
+At least one previous industry internship, co-op, or project completed in a relevant area
+Ability to relocate to the Bay Area, California or Seattle for the duration of the internship
+Interns at Zoox may not use any proprietary information they are working on as part of their thesis, any published work with their university, or to be distributed to anyone outside of Zoox
+Fluency in C++ and/or Python, as well as a strong understanding of data structures and algorithms
+Broad knowledge of Gaussian Splatting or Neural Radiance Fields
+Strong understanding of generative AI techniques including diffusion, GAN, and transformers
+Experience with game development or simulation frameworks used in robotics
+Experience with 3D game logic
+Strong skills in mathematics, particularly linear algebra
+Experience with large-scale code projects

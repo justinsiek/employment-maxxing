@@ -1,0 +1,208 @@
+{
+    "experiences": [
+        {
+            "id": "exp_faf",
+            "title": "Data Science Intern",
+            "company": "First American Financial",
+            "location": "Santa Ana, CA",
+            "dates": "May 2025 -- Present",
+            "description": "Built a massive knowledge graph with 500M+ nodes and 1.5B+ edges representing California property data, which is now used by 3 production products. Developed a Graph Neural Network to predict property listing propensity, achieving a 10% lift over baseline models. Built a GraphRAG system on LangChain that enables conversational natural language interaction with the knowledge graph, letting users query property data through plain English questions.",
+            "must_include": [
+                "500M+ nodes",
+                "1.5B+ edges",
+                "3 production products",
+                "10\\% lift",
+                "GraphRAG",
+                "LangChain"
+            ],
+            "tags": [
+                "data-science",
+                "gnn",
+                "knowledge-graph",
+                "graphrag",
+                "langchain",
+                "python"
+            ]
+        },
+        {
+            "id": "exp_icssc",
+            "title": "Software Developer",
+            "company": "ICS Student Council",
+            "location": "Irvine, CA",
+            "dates": "Sep 2024 -- Present",
+            "description": "Developed ZotMeet, a fullstack platform for UCI students that enables seamless meeting scheduling and study room booking. Designed and implemented the PostgreSQL database schema using Drizzle ORM, focusing on scalability and query performance optimization. Built fullstack features with NextJS including responsive UI components, server-side rendering, and RESTful API endpoints.",
+            "must_include": [
+                "ZotMeet",
+                "PostgreSQL",
+                "Drizzle ORM",
+                "NextJS"
+            ],
+            "tags": [
+                "fullstack",
+                "nextjs",
+                "postgresql",
+                "drizzle",
+                "web"
+            ]
+        }
+    ],
+    "projects": [
+        {
+            "id": "proj_flywheel",
+            "name": "Flywheel",
+            "technologies": "PyTorch $|$ Hugging Face $|$ Statsig",
+            "url": "https://github.com/BOSSrobot/DubHacks2025",
+            "description": "Built an automated RLHF training pipeline that optimizes AI developer tools using real user interaction data from A/B experiments. Implemented Direct Preference Optimization with QLora for efficient 4-bit quantized model fine-tuning. Created an MCP server that enables LLMs to automatically embed A/B tests into applications to construct user preference datasets. Deployed the fine-tuned model on a vLLM inference server, creating a closed-loop system where user preferences from Statsig experiments continuously improve model performance.",
+            "must_include": [
+                "RLHF",
+                "Direct Preference Optimization",
+                "QLora",
+                "4-bit quantized",
+                "MCP server",
+                "vLLM"
+            ],
+            "tags": [
+                "ml",
+                "rlhf",
+                "pytorch",
+                "huggingface",
+                "mcp",
+                "llm"
+            ]
+        },
+        {
+            "id": "proj_hhana",
+            "name": "hhana",
+            "technologies": "Python $|$ Polars $|$ DuckDB",
+            "url": "https://github.com/justinsiek/hhana",
+            "description": "Built a hand history analysis and node aggregation (HHANA) poker bot that uses a Monte Carlo Counterfactual Regret Minimization (MCCFR) algorithm augmented with data-driven exploits derived from analyzing over 10 million poker hand histories. Designed an ETL pipeline using Polars and DuckDB to process hand histories, identify population deviations from game-theoretic equilibrium, and generate exploitative counter-strategies. Implemented the MCCFR baseline with softmax utility boosts to capitalize on exploits from population imbalances.",
+            "must_include": [
+                "10 million hand histories",
+                "MCCFR",
+                "ETL pipeline",
+                "Polars",
+                "DuckDB"
+            ],
+            "tags": [
+                "algorithms",
+                "data-engineering",
+                "python",
+                "polars",
+                "duckdb",
+                "game-theory"
+            ]
+        },
+        {
+            "id": "proj_makersafe",
+            "name": "MakerSafe (Cruzhacks Best Hardware Hack, Best Use of Viam)",
+            "technologies": "OpenCV $|$ YOLOv8 $|$ NextJS",
+            "url": "https://github.com/justinsiek/maker-safe",
+            "description": "Built a real-time makerspace safety monitoring system using computer vision to track user presence, station usage, and PPE compliance. Won Best Use of Viam and Best Hardware Hack at CruzHacks, a hackathon with over 500 participants. Engineered a Raspberry Pi edge system with three webcams (login camera + 2 station cameras), using Viam as the control plane to run OpenCV face detection and YOLOv8 PPE detection per-station for identity and compliance enforcement. Streamed user and station events to a NextJS/Flask dashboard through real-time POST requests and WebSockets.",
+            "must_include": [
+                "500 participants",
+                "\\emph{Best Use of Viam}",
+                "\\emph{Best Hardware Hack}",
+                "Raspberry Pi",
+                "YOLOv8",
+                "OpenCV"
+            ],
+            "tags": [
+                "computer-vision",
+                "opencv",
+                "yolo",
+                "raspberry-pi",
+                "iot",
+                "nextjs",
+                "flask"
+            ]
+        },
+        {
+            "id": "proj_apprazer",
+            "name": "Apprazer (IrvineHacks Best Use Of AI In Real Estate)",
+            "technologies": "OpenCV $|$ SKLearn $|$ NextJS",
+            "url": "https://github.com/justinsiek/Apprazer",
+            "description": "Led a 4-person team to build a loan pre-approval system that extracts information from loan application documents and calculates approval likelihood. Won Best Use of AI in Real Estate at IrvineHacks, a hackathon with over 600 participants. Achieved 99% document parsing accuracy while processing only 5% of each page through ROI extraction with OpenCV. Built a Random Forest classification model trained on 5M+ records that achieved 88% loan decision classification accuracy.",
+            "must_include": [
+                "600 participants",
+                "\\emph{Best Use of AI in Real Estate}",
+                "99\\%",
+                "5\\%",
+                "88\\%",
+                "5M+ records",
+                "Random Forest"
+            ],
+            "tags": [
+                "ml",
+                "opencv",
+                "sklearn",
+                "nextjs",
+                "document-processing"
+            ]
+        },
+        {
+            "id": "proj_sonder",
+            "name": "Sonder (IrvineHacks Best Blockchain Hack)",
+            "technologies": "Web3js $|$ MetaMask $|$ NextJS",
+            "url": "https://github.com/justinsiek/sonder",
+            "description": "Led a 4-person team to build Sonder, an identity-preserving social platform that connects users while maintaining full anonymity through blockchain authentication. Won Best Blockchain Project at IrvineHacks, a hackathon with over 500 participants. Built a decentralized login system using Web3js and MetaMask for privacy-first blockchain identity verification, with a NextJS frontend.",
+            "must_include": [
+                "500 participants",
+                "\\emph{Best Blockchain Project}",
+                "decentralized",
+                "Web3js",
+                "MetaMask"
+            ],
+            "tags": [
+                "blockchain",
+                "web3",
+                "nextjs",
+                "authentication"
+            ]
+        }
+    ],
+    "skills": {
+        "languages": [
+            "Python",
+            "SQL",
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "TypeScript",
+            "Java",
+            "C++",
+            "R"
+        ],
+        "frameworks": [
+            "Next.js",
+            "React",
+            "Tailwind",
+            "Flask",
+            "LangChain",
+            "GraphFrames"
+        ],
+        "libraries": [
+            "pandas",
+            "numpy",
+            "polars",
+            "matplotlib",
+            "Apache Spark",
+            "OpenCV",
+            "Tensorflow",
+            "Pytorch",
+            "SKLearn",
+            "Web3js"
+        ],
+        "tools": [
+            "AWS",
+            "Databricks",
+            "Snowflake",
+            "Git",
+            "Docker",
+            "Postman",
+            "Vercel",
+            "Firebase",
+            "Supabase",
+            "Playwright"
+        ]
+    }
+}
