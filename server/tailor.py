@@ -26,36 +26,74 @@ Return a JSON object with this exact schema:
 
 Select projects whose technologies, skills, and problem domains best match the job requirements. Prioritize projects that demonstrate the most relevant technical skills."""
 
-BULLET_TUNING_SYSTEM = """You are an expert resume bullet point writer for software engineering roles. Your job is to craft bullet points for a single resume section, tailored for a specific job posting.
+BULLET_TUNING_SYSTEM = """You are an elite resume writer specializing in software engineering internship and new-grad resumes. Your job is to craft 3 bullet points for ONE resume section, tailored for a specific job posting.
 
-You will receive a description of the work done and a list of phrases/metrics that MUST appear in the bullets.
+You will receive:
+- A job description to tailor toward
+- A description of the candidate's work in this role/project
+- Optionally, a list of phrases/metrics that MUST appear verbatim in the bullets
 
-CRITICAL RULES:
-- You must return exactly 3 bullet points
-- Bullet 1: MUST be 210-220 characters (exactly two lines on a resume)
-- Bullet 2: MUST be 210-220 characters (exactly two lines on a resume)
-- Bullet 3: MUST be 105-110 characters (exactly one line on a resume)
-- COUNT CHARACTERS CAREFULLY. This is the most important constraint.
-- Every item in the "must_include" list MUST appear in at least one bullet
-- Emphasize skills and keywords from the job description
-- Maintain truthfulness — only reframe existing work, never fabricate
-- Keep LaTeX escape characters exactly as provided (\\%, \\&, \\emph{}, etc.)
-- Bullets should NOT start with a dash or bullet character — just the text content
+## WRITING FRAMEWORK — USE THE XYZ FORMULA
 
-Return a JSON object:
+Structure every bullet as: "Accomplished [X] as measured by [Y], by doing [Z]"
+- X = the result or impact (what improved, what was built, what was delivered)
+- Y = the quantifiable metric (percentage, count, scale, speed, accuracy)
+- Z = the specific technical action, tools, or methods used
+
+This can be rearranged for flow, but every bullet MUST contain all three components (action, method, measurable result).
+
+## STYLE RULES
+
+1. **Start with a strong, unique action verb.** Use a DIFFERENT verb for each bullet. 
+   Good verbs: Architected, Engineered, Developed, Constructed, Implemented, Designed, Built, Deployed, Optimized, Achieved, Spearheaded, Led, Automated, Integrated, Accelerated, Reduced, Streamlined, Launched
+   NEVER use: Utilized, Helped, Assisted, Worked on, Was responsible for
+
+2. **Be specific and technical.** Name exact technologies, frameworks, algorithms, and architectures. Vague descriptions like "improved the system" are unacceptable.
+
+3. **Quantify everything.** Every bullet must include at least one number (percentage, count, dollar amount, scale, latency, accuracy, etc.). Use real numbers from the description — do NOT invent or fabricate metrics.
+
+4. **Write in past tense, no subject.** Bullets should read like "Built X..." not "I built X..." or "Building X..."
+
+5. **Each bullet must be ONE complete, flowing sentence.** No fragments. No sentences that end abruptly with a period after a single word. No appending disconnected clauses.
+
+6. **Consistency across bullets:**
+   - Hackathon wins must ALWAYS use the format: winning \\emph{Award Name} at a hackathon with over N participants
+   - Numbers: always use digits, not words (write "3" not "three")
+   - Percentages: always use the format "N\\%" 
+   - Lists of technologies: separate with commas, no "and" before the last item
+
+## ANTI-PATTERNS — NEVER DO THESE
+
+- ❌ Single-word sentence fragments: "...for monitoring. Iteratively."
+- ❌ Repeating the same verb across bullets
+- ❌ Inconsistent award formatting: don't say "among 600 participants" in one bullet and "(500 participants)" in another
+- ❌ Vague impact: "improved performance" without a number
+- ❌ Starting a bullet with "Utilized" or "Responsible for"
+- ❌ Ending a bullet with a dangling technology name or fragment
+- ❌ Bullets that are just a list of technologies with no context
+- ❌ Inventing fake metrics — only use numbers stated or clearly implied in the description
+- ❌ Filler adjectives like "massive", "robust", "cutting-edge", "innovative", "comprehensive", "sophisticated" — let the numbers speak for themselves (say "property graph with 500M+ nodes" not "massive property graph with 500M+ nodes")
+
+## CHARACTER LENGTH CONSTRAINTS
+
+Each bullet must be EXACTLY one of these two sizes:
+- **1-line bullet:** 105-110 characters
+- **2-line bullet:** 210-220 characters
+
+You must return exactly 3 bullets. Choose whatever mix of 1-line and 2-line bullets best fits the content naturally. Do not force content into an unnatural length.
+Count characters carefully. This determines how the resume renders in LaTeX.
+
+## MUST-INCLUDE ITEMS (if provided)
+
+If a "must_include" list is provided, every item MUST appear verbatim in at least one bullet. Copy them exactly as provided, including any LaTeX formatting like \\emph{} or \\%.
+
+## OUTPUT FORMAT
+
+Return a JSON object with exactly 3 bullets. For each bullet, also return its target type:
 {
-  "bullets": ["bullet1 (210-220 chars)", "bullet2 (210-220 chars)", "bullet3 (105-110 chars)"]
+  "bullets": ["bullet text", "bullet text", "bullet text"]
 }"""
 
-SKILLS_SYSTEM = """You are an expert resume writer. Given a job description and a full skills bank, select the most relevant subset of skills to highlight on a resume.
-
-Return a JSON object:
-{
-  "languages": ["Python", "JavaScript"],
-  "frameworks": ["React", "Flask"],
-  "libraries": ["pandas", "OpenCV"],
-  "tools": ["AWS", "Docker"]
-}"""
 
 
 def load_projects():
@@ -70,7 +108,7 @@ def sanitize_job_name(title, company):
 
 def call_llm(system_prompt, user_prompt):
     response = client.chat.completions.create(
-        model="gpt-5-mini",
+        model="o4-mini",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
@@ -98,9 +136,35 @@ Select the 4 most relevant projects for this job."""
     return result['selected_projects']
 
 
+def sanitize_bullet(text):
+    """Escape LaTeX special characters the LLM might introduce, while preserving
+    intentional LaTeX commands from must_include items (like \\emph{}, \\%)."""
+    # Don't touch text that already has proper LaTeX commands
+    # Only escape bare special chars that aren't part of LaTeX commands
+    
+    # Fix unescaped & (but not \\&)
+    text = re.sub(r'(?<!\\)&', r'\\&', text)
+    # Fix unescaped % (but not \\%)
+    text = re.sub(r'(?<!\\)%', r'\\%', text)
+    # Fix unescaped # (but not \\#)  
+    text = re.sub(r'(?<!\\)#', r'\\#', text)
+    # Fix unescaped _ outside of math mode (but not \\_)
+    # Be careful: _ is common in tech terms but breaks LaTeX
+    # Only escape if not already escaped and not inside a LaTeX command
+    text = re.sub(r'(?<!\\)_(?![a-zA-Z]*})', r'\\_', text)
+    
+    return text
+
+
 def tune_section_bullets(job_description, section_data, section_type):
     """Call per section: Craft bullets for one experience or project from its description."""
-    must_include = json.dumps(section_data.get('must_include', []))
+    must_include = section_data.get('must_include', [])
+    
+    must_include_block = ""
+    if must_include:
+        must_include_block = f"""\nMust include these phrases/metrics verbatim in the bullets:
+{json.dumps(must_include)}"""
+
     user_prompt = f"""## Job Description
 
 {job_description}
@@ -111,10 +175,7 @@ Title: {section_data.get('title') or section_data.get('name')}
 Company/Technologies: {section_data.get('company', section_data.get('technologies', ''))}
 
 Description of work:
-{section_data['description']}
-
-Must include these phrases/metrics in the bullets:
-{must_include}
+{section_data['description']}{must_include_block}
 
 Craft exactly 3 tailored bullet points following the character length rules."""
 
@@ -124,26 +185,16 @@ Craft exactly 3 tailored bullet points following the character length rules."""
     if len(result['bullets']) != 3:
         raise ValueError(f"Expected 3 bullets, got {len(result['bullets'])}")
 
-    # Log character counts for debugging
+    # Sanitize and log character counts
+    sanitized = []
     for i, b in enumerate(result['bullets']):
+        b = sanitize_bullet(b)
         print(f"    Bullet {i+1}: {len(b)} chars")
+        sanitized.append(b)
 
-    return result['bullets']
+    return sanitized
 
 
-def select_skills(job_description, projects_data):
-    """Select relevant skills subset."""
-    user_prompt = f"""## Job Description
-
-{job_description}
-
-## Full Skills Bank
-
-{json.dumps(projects_data['skills'], indent=2)}
-
-Select the most relevant skills for this job."""
-
-    return call_llm(SKILLS_SYSTEM, user_prompt)
 
 
 def build_experience_tex(experiences, tailored_bullets):
@@ -178,16 +229,12 @@ def build_project_tex(selected_ids, projects_data, tailored_bullets):
     return '\n'.join(lines)
 
 
-def fill_template(experience_tex, project_tex, skills):
+def fill_template(experience_tex, project_tex):
     with open(TEMPLATE_PATH, 'r') as f:
         tex = f.read()
 
     tex = tex.replace('<<experience_entries>>', experience_tex)
     tex = tex.replace('<<project_entries>>', project_tex)
-    tex = tex.replace('<<skills_languages>>', ', '.join(skills.get('languages', [])))
-    tex = tex.replace('<<skills_frameworks>>', ', '.join(skills.get('frameworks', [])))
-    tex = tex.replace('<<skills_libraries>>', ', '.join(skills.get('libraries', [])))
-    tex = tex.replace('<<skills_tools>>', ', '.join(skills.get('tools', [])))
     return tex
 
 
@@ -198,7 +245,7 @@ def tailor_resume(job_description, job_title='Unknown Position', job_company='Un
     Call 1: Select 4 projects
     Calls 2-3: Tune each experience section (always keep all experiences)
     Calls 4-7: Tune each selected project section
-    Skills are kept as-is from projects.json.
+    Skills are hardcoded in the LaTeX template.
     """
     projects_data = load_projects()
     tailored_bullets = {}
@@ -218,13 +265,10 @@ def tailor_resume(job_description, job_title='Unknown Position', job_company='Un
         print(f"Step {4+i}/7: Tuning project - {proj['name']}...")
         tailored_bullets[proj_id] = tune_section_bullets(job_description, proj, 'Project')
 
-    # Skills stay as-is from projects.json
-    skills = projects_data['skills']
-
     # Build LaTeX
     experience_tex = build_experience_tex(projects_data['experiences'], tailored_bullets)
     project_tex = build_project_tex(selected_project_ids, projects_data, tailored_bullets)
-    tex_content = fill_template(experience_tex, project_tex, skills)
+    tex_content = fill_template(experience_tex, project_tex)
 
     # Write and compile
     job_dir_name = sanitize_job_name(job_title, job_company)
@@ -249,7 +293,6 @@ def tailor_resume(job_description, job_title='Unknown Position', job_company='Un
         'job_company': job_company,
         'selected_projects': selected_project_ids,
         'tailored_bullets': tailored_bullets,
-        'skills': skills,
     }
 
 
