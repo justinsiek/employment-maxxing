@@ -1,49 +1,34 @@
-Cloudflare
-· 1 day ago
-Data Analytics Intern (Summer 2026)
-position
-Austin, TX
-time
-Internship
-remote
-Onsite
-seniority
-Intern
-workcard
-Start in 2026 Summer
+Software Engineering Intern (Summer 2026)
+South San Francisco, California, USA
+About Zipline
+Zipline is on a mission to transform the way goods move. Our aim is to solve the world’s most urgent and complex access challenges by building the first instant logistics system that serves all humans equally. Leveraging expertise in robotics and autonomy, Zipline designs, builds, and operates a fleet of cutting edge, autonomous delivery drones. We serve tens of millions of people around the world.
 
-Responsibilities
-Analyze product and business data to uncover trends in acquisition, activation, retention, and monetization across Cloudflare’s self-serve customers
-Write SQL queries to explore large-scale datasets and build dashboards to track key metrics and experiments
-Partner with product, marketing, and engineering teams to define success metrics and answer high-impact business questions
-Support A/B tests and growth experiments by measuring impact and providing recommendations
-Help maintain and improve data pipelines, data models, and documentation
-Present findings and actionable insights to stakeholders in a clear, compelling way
-Contribute to improving analytics processes, data quality, and self-serve reporting
+Joining Zipline’s Emerging Talent program as an intern is an opportunity to contribute to our promise of building a system that provides equitable access to critical healthcare supplies for millions of people. We believe that internships are more than just opportunities to learn by watching or doing low level tasks. We expect our interns to take on meaningful work that actively contributes to moving Zipline’s mission forward, while learning real-world skills that will serve them in their careers for the long term. 
 
-Qualification
-check
-Represents the skills you have
-Find out how your skills align with this job's requirements. If anything seems off, you can easily click on the tags to select or unselect skills to reflect your actual expertise.
+Join us, and build the future of logistics with the best humans around!
 
-checkSQL
-checkData analysis
-checkData visualization
-checkPython
-checkR
-checkA/B testing
-checkAnalytical skills
-Curiosity
-checkCommunication skills
-checkTeam collaboration
-Required
-Currently pursuing a Bachelor's or Master's degree in Data Science, Statistics, Computer Science, Economics, or a related quantitative field
-Strong analytical and problem-solving skills
-Experience with SQL and data analysis tools (e.g., Python, R, or spreadsheets)
-Ability to communicate insights clearly to both technical and non-technical audiences
-Curiosity about product analytics, growth, and how data drives decisions
-Preferred
-Experience with data visualization tools (e.g., Looker, Tableau, Mode, or similar)
-Familiarity with experimentation, A/B testing, or product analytics
-Exposure to cloud data warehouses (BigQuery, Snowflake, etc.)
-Interest in Internet infrastructure, security, or developer platforms
+About the Application Software Team
+Zipline’s Application Software team builds the systems that power every part of our business, from the factory floor to real-time delivery operations. We are responsible for the “operating system” of Zipline: critical applications that manage hardware production and inventory, fuel demand generation and customer engagement, enable data-driven decision making, and orchestrate fulfillment, flight, and delivery at scale. Our work spans internal platforms that streamline manufacturing, supply chain, and financial workflows, as well as external-facing applications that allow customers to place and track orders. By connecting every corner of the business through software, we ensure Zipline can operate efficiently, intelligently, and globally.
+
+What You'll Do
+
+Take technical ownership of critical features across Zipline’s consumer mobile and web apps, from design through deployment and iteration
+Build features in the React Native mobile codebase or backend services in Python and Go
+Collaborate cross-functionally to build user-facing features that are fast, elegant, and grounded in a strong understanding of customer needs
+Influence our long-term technical roadmap and contribute to team-wide engineering best practices
+What You'll Bring
+Passion for software development and curiosity to learn new technology stacks
+Strong understanding in computer science fundamentals
+A product mindset and passion for crafting intuitive, delightful customer experiences
+What Else You Should Know
+Our internships are full-time positions, in-person at our South San Francisco or Dallas office. We will host our Summer 2026 interns from May or June to August. 
+
+Candidates are limited to three (3) applications within a 30-day period.
+
+The starting cash range for this internship is $40 - 44/ hour. Please note that this is a target, starting cash range for a candidate who meets the minimum qualifications for this role. The final cash pay for this role will depend on a variety of factors, including a specific candidate's experience, qualifications, skills, and working location. The total compensation package for each role may also include: a housing stipend; overtime pay; relocation support; paid sick time; and more. 
+
+Zipline is an equal opportunity employer and prohibits discrimination and harassment of any type without regard to race, color, religion, age, sex, national origin, disability status, genetics, protected veteran status, sexual orientation, gender identity or expression, or any other characteristic protected by federal, state or local laws or our own sensibilities.
+
+We value diversity at Zipline and welcome applications from those who are traditionally underrepresented in tech. If you like the sound of this position but are not sure if you are the perfect fit, please apply!
+
+Zipline is also committed to providing reasonable accommodations to individuals with disabilities. Please let your point of contact at Zipline know if you require any accommodations throughout your interview process.

@@ -6,12 +6,14 @@
             "company": "First American Financial",
             "location": "Santa Ana, CA",
             "dates": "May 2025 -- Present",
-            "description": "Built a knowledge graph with 500M+ nodes and 1.5B+ edges representing California property data, which is now used by 3 production products. Developed a Graph Neural Network to predict property listing propensity, achieving a 10% lift over baseline models. Built a GraphRAG system on LangChain that enables conversational natural language interaction with the knowledge graph, letting users query property data through plain English questions.",
+            "num_bullets": 4,
+            "description": "Built a property knowledge graph with 500M+ nodes and 1.5B+ edges representing California property data using GraphFrames on Databricks, leveraging Apache Spark distributed computing for scalability. The graph is now used by 3 production products. Developed a property listing propensity GNN model using PyTorch Geometric with GraphSAGE as the architecture and neighbor sampling for scalable training on the large graph. The training job was distributed using TorchDistributor on Databricks. Achieved a 10% lift over baseline models. Built a GraphRAG system with a complete UI in Next.js, with the LLM-powered conversational chat implemented using LangChain, enabling users to query property data through plain English questions over the knowledge graph. Currently building a next-purchase prediction model using a decision tree-based binary classification approach to predict whether an agent will transact within the next 90 days, already achieving a 20% lift over baseline models.",
             "must_include": [
                 "500M+ nodes",
                 "1.5B+ edges",
                 "3 production products",
                 "10\\% lift",
+                "20\\% lift",
                 "GraphRAG",
                 "LangChain"
             ],

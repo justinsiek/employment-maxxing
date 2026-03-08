@@ -55,8 +55,14 @@ def compile_tex_to_pdf(tex_path, output_dir=None, output_name='Justin_S_Resume.p
 
 
 if __name__ == '__main__':
-    # Test: compile original_resume.tex
-    original = os.path.join(os.path.dirname(__file__), '..', 'original_resume.tex')
-    print(f"Compiling: {original}")
-    result = compile_tex_to_pdf(original)
-    print(f"PDF saved to: {result['pdf_path']}")
+    import sys
+
+    if len(sys.argv) > 1:
+        # Recompile a specific .tex file: python compiler.py path/to/resume.tex
+        tex_path = os.path.abspath(sys.argv[1])
+        output_dir = os.path.dirname(tex_path)
+        print(f"Compiling: {tex_path}")
+        result = compile_tex_to_pdf(tex_path, output_dir=output_dir)
+        print(f"PDF saved to: {result['pdf_path']}")
+    else:
+        print("Usage: python compiler.py <path/to/resume.tex>")
