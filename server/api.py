@@ -1,4 +1,6 @@
 import os
+import uuid
+import time
 from flask import Flask, request, jsonify, send_file, Response
 from flask_cors import CORS
 import json
@@ -13,6 +15,61 @@ app = Flask(__name__)
 CORS(app)
 
 RESUMES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resumes'))
+
+# Global jobs dictionary and queue
+jobs_db = {}
+job_queue = queue.Queue()
+
+def background_worker():
+    """Continuously processes jobs from the queue."""
+    while True:
+        job_id = job_queue.get()
+        if job_id not in jobs_db:
+            job_queue.task_done()
+            continue
+            
+        job = jobs_db[job_id]
+        job['status'] = 'generating'
+        job['message'] = 'Starting generation process...'
+        
+        try:
+            def progress_callback(msg):
+                if jobs_db.get(job_id, {}).get('status') == 'cancelling':
+                    raise InterruptedError("Job cancelled by user")
+                jobs_db[job_id]['message'] = msg
+                
+            result = tailor_resume(
+                job['job_description'], 
+                job_title=job['job_title'], 
+                job_company=job['job_company'], 
+                progress_callback=progress_callback
+            )
+            
+            # If it was cancelled during generation, don't mark as completed
+            if jobs_db.get(job_id, {}).get('status') == 'cancelling':
+                raise InterruptedError("Job cancelled by user")
+            
+            dir_path = os.path.dirname(result['tex_path'])
+            resume_id = os.path.basename(dir_path)
+            
+            job['status'] = 'completed'
+            job['message'] = 'Complete!'
+            job['resume_id'] = resume_id
+            
+        except InterruptedError as e:
+            job['status'] = 'cancelled'
+            job['message'] = 'Cancelled by user.'
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            job['status'] = 'error'
+            job['message'] = str(e)
+            
+        finally:
+            job_queue.task_done()
+
+# Start the background worker thread when the app starts
+threading.Thread(target=background_worker, daemon=True).start()
 
 @app.route('/api/resumes', methods=['GET'])
 def list_resumes():
@@ -109,52 +166,61 @@ def generate_resume():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/generate/stream', methods=['GET'])
-def generate_resume_stream():
-    """Stream generation progress via SSE."""
-    job_description = request.args.get('job_description')
-    job_title = request.args.get('job_title', 'Software Engineer')
-    job_company = request.args.get('job_company', 'Company')
+@app.route('/api/jobs', methods=['GET'])
+def list_jobs():
+    """Return all known jobs, sorted by creation time (implicitly by dict insertion order but let's be safe)."""
+    return jsonify({"jobs": list(jobs_db.values())})
+
+@app.route('/api/jobs', methods=['POST'])
+def create_job():
+    """Queue a new resume generation job."""
+    data = request.json
+    job_description = data.get('job_description')
+    job_title = data.get('job_title', 'Software Engineer')
+    job_company = data.get('job_company', 'Company')
     
     if not job_description:
         return jsonify({"error": "job_description is required"}), 400
+        
+    job_id = str(uuid.uuid4())
+    
+    jobs_db[job_id] = {
+        "id": job_id,
+        "job_title": job_title,
+        "job_company": job_company,
+        "job_description": job_description,
+        "status": "queued",
+        "message": "Waiting in queue...",
+        "created_at": time.time()
+    }
+    
+    job_queue.put(job_id)
+    return jsonify({"success": True, "job_id": job_id})
 
-    q = queue.Queue()
+@app.route('/api/jobs/<job_id>', methods=['DELETE'])
+def dismiss_job(job_id):
+    """Remove a job from the UI. If it's running, cancel it first."""
+    if job_id in jobs_db:
+        if jobs_db[job_id]['status'] in ['queued', 'generating']:
+            jobs_db[job_id]['status'] = 'cancelling'
+        else:
+            del jobs_db[job_id]
+        return jsonify({"success": True})
+    return jsonify({"error": "Job not found"}), 404
 
-    def background_task():
-        try:
-            def progress_callback(msg):
-                q.put({"type": "progress", "message": msg})
-                
-            result = tailor_resume(job_description, job_title=job_title, job_company=job_company, progress_callback=progress_callback)
-            
-            dir_path = os.path.dirname(result['tex_path'])
-            resume_id = os.path.basename(dir_path)
-            
-            q.put({
-                "type": "complete", 
-                "data": {
-                    "id": resume_id,
-                    "job_title": job_title,
-                    "job_company": job_company
-                }
-            })
-        except Exception as e:
-            import traceback
-            traceback.print_exc()
-            q.put({"type": "error", "message": str(e)})
-
-    thread = threading.Thread(target=background_task)
-    thread.start()
-
-    def event_stream():
-        while True:
-            msg = q.get()
-            yield f"data: {json.dumps(msg)}\n\n"
-            if msg["type"] in ["complete", "error"]:
-                break
-
-    return Response(event_stream(), mimetype="text/event-stream")
+@app.route('/api/jobs/<job_id>/cancel', methods=['POST'])
+def cancel_job(job_id):
+    """Cancel a running or queued job, leaving it in the UI as 'cancelled'."""
+    if job_id in jobs_db:
+        job = jobs_db[job_id]
+        if job['status'] == 'queued':
+            job['status'] = 'cancelled'
+            job['message'] = 'Cancelled by user.'
+        elif job['status'] == 'generating':
+            job['status'] = 'cancelling'
+            job['message'] = 'Cancelling...'
+        return jsonify({"success": True, "status": job['status']})
+    return jsonify({"error": "Job not found"}), 404
 
 @app.route('/api/compile', methods=['POST'])
 def compile_resume():

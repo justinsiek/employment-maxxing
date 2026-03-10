@@ -28,83 +28,29 @@ Return a JSON object with this exact schema:
 
 Select the project whose technologies, skills, and problem domains best match the job requirements."""
 
-BULLET_TUNING_SYSTEM = """You are an elite resume writer specializing in software engineering internship and new-grad resumes. Your job is to craft 3 bullet points for ONE resume section, tailored for a specific job posting.
+BULLET_TUNING_SYSTEM = """You are an elite resume editor specializing in software engineering roles. Your job is to select and subtly refine bullet points from a provided "Bullet Bank" to perfectly match a specific job description.
 
 You will receive:
 - A job description to tailor toward
-- A description of the candidate's work in this role/project
-- Optionally, a list of phrases/metrics that MUST appear verbatim in the bullets
+- A "Bullet Bank" of pre-written, highly polished achievements for this role/project
+- Optionally, a list of phrases/metrics that MUST appear verbatim in your final selection
 
-## WRITING FRAMEWORK — USE THE XYZ FORMULA
+## YOUR TASK
+1. **Select** exactly the requested number of bullets from the Bullet Bank that are MOST relevant to the job's requirements.
+2. **Refine** the selected bullets by making MINOR keyword substitutions to better match the terminology used in the job description (e.g., if the bank says "React" but the JD emphasizes "Next.js", and the project supports it, swap it).
 
-Structure every bullet as: "Accomplished [X] as measured by [Y], by doing [Z]"
-- X = the result or impact (what improved, what was built, what was delivered)
-- Y = the quantifiable metric (percentage, count, scale, speed, accuracy)
-- Z = the specific technical action, tools, or methods used
-
-This can be rearranged for flow, but every bullet MUST contain all three components (action, method, measurable result).
-
-## STYLE RULES
-
-1. **Start with a strong, unique action verb.** Use a DIFFERENT verb for each bullet. 
-   Good verbs: Architected, Engineered, Developed, Constructed, Implemented, Designed, Built, Deployed, Optimized, Achieved, Spearheaded, Led, Automated, Integrated, Accelerated, Reduced, Streamlined, Launched
-   NEVER use: Utilized, Helped, Assisted, Worked on, Was responsible for
-
-2. **Be specific and technical.** Name exact technologies, frameworks, algorithms, and architectures. Vague descriptions like "improved the system" are unacceptable.
-
-3. **Quantify everything.** Every bullet must include at least one number (percentage, count, dollar amount, scale, latency, accuracy, etc.). Use real numbers from the description — do NOT invent or fabricate metrics.
-
-4. **Write in past tense, no subject.** Bullets should read like "Built X..." not "I built X..." or "Building X..."
-
-5. **Each bullet must be ONE complete, flowing sentence.** No fragments. No sentences that end abruptly with a period after a single word. No appending disconnected clauses.
-
-6. **Consistency across bullets:**
-   - Hackathon wins must ALWAYS use the format: winning \\emph{Award Name} at a hackathon with over N participants
-   - Numbers: always use digits, not words (write "3" not "three")
-   - Percentages: always use the format "N\\%" 
-   - Lists of technologies: separate with commas, no "and" before the last item
-
-7. **ATS keyword optimization.** This is critical for passing automated resume screeners:
-   - FIRST PRIORITY: Extract EXACT keywords, phrases, and technology names from the job description and weave as many as possible into the bullets. If the job says "distributed systems", use that exact phrase — don't paraphrase to "multi-node architecture"
-   - SECOND PRIORITY: Include technologies that are genuinely part of the described work, even if not in the JD — these show breadth and help with general ATS matching
-   - Do NOT inject buzzwords that have nothing to do with the actual project. Only mention technologies the candidate actually used
-   - For abbreviations: mirror whatever form the job description uses. If the JD says "CI/CD", use "CI/CD"
-   - Spread job description keywords across ALL 3 bullets rather than cramming them into one
-   - Do NOT keyword stuff — every keyword must be part of a natural, readable sentence that describes real work
-
-## ANTI-PATTERNS — NEVER DO THESE
-
-- ❌ Single-word sentence fragments: "...for monitoring. Iteratively."
-- ❌ Repeating the same verb across bullets
-- ❌ Inconsistent award formatting: don't say "among 600 participants" in one bullet and "(500 participants)" in another
-- ❌ Vague impact: "improved performance" without a number
-- ❌ Starting a bullet with "Utilized" or "Responsible for"
-- ❌ Ending a bullet with a dangling technology name or fragment
-- ❌ Bullets that are just a list of technologies with no context
-- ❌ Inventing fake metrics — only use numbers stated or clearly implied in the description
-- ❌ Filler adjectives like "massive", "robust", "cutting-edge", "innovative", "comprehensive", "sophisticated" — let the numbers speak for themselves (say "property graph with 500M+ nodes" not "massive property graph with 500M+ nodes")
-- ❌ Repeating the same phrase or fact across multiple bullets — if "hackathon with over 500 participants" appears in one bullet, do NOT say it again in another bullet. Each bullet must contain unique information.
-- ❌ Forcing unimpressive or trivial statistics just to have a number. The number "1" is almost NEVER impressive. BAD examples: "1 product cycle", "1 PostgreSQL schema", "1 microservice deployed", "3 user metrics", "2 file types", "4 hyperparameters", "5 pipeline stages". These are meaningless counts that weaken the bullet. Only quantify when the number demonstrates meaningful scale (500M+ nodes), speed (30\\% faster), accuracy (88\\%), or impact (3 production products). If a bullet doesn't have a genuinely impressive number, just describe the technical work without forcing a count.
-- ❌ Using non-standard acronyms that ATS won't recognize — write "knowledge graph" not "KG", write "hand history" not "HH". Only use acronyms that are universally recognized in CS (GNN, CNN, API, REST, CI/CD, ETL, LLM, RLHF, DPO, SQL, etc.)
-
-## CHARACTER LENGTH CONSTRAINTS
-
-Each bullet must be EXACTLY one of these two sizes:
-- **1-line bullet:** 100-110 characters
-- **2-line bullet:** 205-215 characters
-
-You must return exactly the number of bullets requested. Choose whatever mix of 1-line and 2-line bullets best fits the content naturally. Do not force content into an unnatural length.
-Count characters carefully. This determines how the resume renders in LaTeX.
-
-## MUST-INCLUDE ITEMS (if provided)
-
-If a "must_include" list is provided, every item MUST appear verbatim in EXACTLY ONE bullet — not zero, not two. Distribute them across the 3 bullets so no single bullet is overloaded. Copy them exactly as provided, including any LaTeX formatting like \\emph{} or \\%. NEVER repeat a must_include item or its data in a different bullet.
+## STRICT RULES for REFINEMENT
+1. **Aggressive ATS Keyword Optimization:** You MUST swap out frameworks/languages in the bullets for equivalents requested in the Job Description when broadly applicable to the project domain. For example, if the JD asks for "Express" and the bullet says "Flask", change it to "Express". If the JD asks for "React" and the bullet says "NextJS", change it. Your goal is to map the candidate's achievements perfectly to the JD's technology stack.
+2. **Never change the metrics or numbers.** If the bank says "500M+ nodes", you must keep exactly "500M+ nodes".
+3. **Never change the core grammatical structure.** Keep the original verbs and sentence flow. You are an editor substituting keywords, NOT a creative writer.
+4. **No abbreviations.** If a bullet uses an acronym, ensure it matches standard industry usage or the JD exactly.
+5. **Zero Redundancy/Repetition:** Do not repeat the same keyword, technology, or phrase multiple times within a single bullet point or across chosen bullets. If a substitution would result in awkward repetition (e.g. "Built a React web app using React"), you must rewrite or omit the duplicate word so it flows naturally.
+6. **STRICT CHARACTER LENGTH CONSTRAINTS:** Every single bullet returned MUST be either exactly 100-110 characters OR exactly 200-210 characters long. Count carefully. If you substitute a longer word, you must trim a different word so the final count falls into one of these two buckets.
 
 ## OUTPUT FORMAT
-
-Return a JSON object with exactly 3 bullets. For each bullet, also return its target type:
+Return a JSON object containing exactly the requested number of refined bullets in an array:
 {
-  "bullets": ["bullet text", "bullet text", "bullet text"]
+  "bullets": ["refined bullet 1", "refined bullet 2", "refined bullet 3"]
 }"""
 
 
@@ -146,12 +92,19 @@ def select_projects(job_description, projects_data):
 
 Select the 1 most relevant project for this job."""
 
-    result = call_llm(PROJECT_SELECTION_SYSTEM, user_prompt)
-    fourth_project = result['selected_project']
-    selected = ALWAYS_INCLUDE_PROJECTS + [fourth_project]
-    print(f"  Always included: {ALWAYS_INCLUDE_PROJECTS}")
-    print(f"  LLM picked: {fourth_project}")
-    return selected
+    for attempt in range(5):
+        try:
+            result = call_llm(PROJECT_SELECTION_SYSTEM, user_prompt)
+            fourth_project = result['selected_project']
+            selected = ALWAYS_INCLUDE_PROJECTS + [fourth_project]
+            print(f"  Always included: {ALWAYS_INCLUDE_PROJECTS}")
+            print(f"  LLM picked: {fourth_project}")
+            return selected
+        except Exception as e:
+            if attempt == 4:
+                print(f"  Project selection failed after 5 attempts: {e}")
+                raise
+            print(f"  Project selection attempt {attempt + 1} failed: {e}. Retrying...")
 
 
 def sanitize_bullet(text):
@@ -177,13 +130,6 @@ def sanitize_bullet(text):
 def tune_section_bullets(job_description, section_data, section_type):
     """Call per section: Craft bullets for one experience or project from its description."""
     num_bullets = section_data.get('num_bullets', 3)
-    must_include = section_data.get('must_include', [])
-    
-    must_include_block = ""
-    if must_include:
-        must_include_block = f"""\nMust include these phrases/metrics verbatim in the bullets:
-{json.dumps(must_include)}"""
-
     user_prompt = f"""## Job Description
 
 {job_description}
@@ -193,24 +139,35 @@ def tune_section_bullets(job_description, section_data, section_type):
 Title: {section_data.get('title') or section_data.get('name')}
 Company/Technologies: {section_data.get('company', section_data.get('technologies', ''))}
 
-Description of work:
-{section_data['description']}{must_include_block}
+Bullet Bank:
+{json.dumps(section_data.get('bullet_bank', []), indent=2)}
 
-Craft exactly {num_bullets} tailored bullet points following the character length rules."""
+Select and refine exactly {num_bullets} bullet points from the Bullet Bank."""
 
-    result = call_llm(BULLET_TUNING_SYSTEM, user_prompt)
+    for attempt in range(5):
+        try:
+            result = call_llm(BULLET_TUNING_SYSTEM, user_prompt)
 
-    # Validate bullet count
-    if len(result['bullets']) != num_bullets:
-        raise ValueError(f"Expected {num_bullets} bullets, got {len(result['bullets'])}")
-    # Sanitize and log character counts
-    sanitized = []
-    for i, b in enumerate(result['bullets']):
-        b = sanitize_bullet(b)
-        print(f"    Bullet {i+1}: {len(b)} chars")
-        sanitized.append(b)
+            # Validate bullet count
+            if len(result['bullets']) != num_bullets:
+                raise ValueError(f"Expected {num_bullets} bullets, got {len(result['bullets'])}")
+            
+            # Sanitize and log character counts
+            sanitized = []
+            for i, b in enumerate(result['bullets']):
+                b = sanitize_bullet(b)
+                length = len(b)
+                print(f"    Bullet {i+1}: {length} chars")
+                if not ((100 <= length <= 110) or (200 <= length <= 210)):
+                    raise ValueError(f"Bullet {i+1} has invalid length {length}. Must be 100-110 or 200-210 chars.")
+                sanitized.append(b)
 
-    return sanitized
+            return sanitized
+        except Exception as e:
+            if attempt == 4:
+                print(f"  Bullet tuning failed after 5 attempts: {e}")
+                raise
+            print(f"  Bullet tuning attempt {attempt + 1} failed: {e}. Retrying...")
 
 
 

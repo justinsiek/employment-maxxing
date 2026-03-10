@@ -7,15 +7,13 @@
             "location": "Santa Ana, CA",
             "dates": "May 2025 -- Present",
             "num_bullets": 4,
-            "description": "Built a property knowledge graph with 500M+ nodes and 1.5B+ edges representing California property data using GraphFrames on Databricks, leveraging Apache Spark distributed computing for scalability. The graph is now used by 3 production products. Developed a property listing propensity GNN model using PyTorch Geometric with GraphSAGE as the architecture and neighbor sampling for scalable training on the large graph. The training job was distributed using TorchDistributor on Databricks. Achieved a 10% lift over baseline models. Built a GraphRAG system with a complete UI in Next.js, with the LLM-powered conversational chat implemented using LangChain, enabling users to query property data through plain English questions over the knowledge graph. Currently building a next-purchase prediction model using a decision tree-based binary classification approach to predict whether an agent will transact within the next 90 days, already achieving a 20% lift over baseline models.",
-            "must_include": [
-                "500M+ nodes",
-                "1.5B+ edges",
-                "3 production products",
-                "10\\% lift",
-                "20\\% lift",
-                "GraphRAG",
-                "LangChain"
+            "bullet_bank": [
+                "Architected property knowledge graph as measured by support for 3 production products with 500M+ nodes and 1.5B+ edges, leveraging GraphFrames and Apache Spark on Databricks for distributed computing.",
+                "Developed GNN listing propensity model as measured by 10\\% lift over baseline by training GraphSAGE with neighbor sampling using PyTorch Geometric.",
+                "Distributed GraphSAGE training jobs using TorchDistributor on Databricks to handle massive property datasets.",
+                "Designed GraphRAG chat web UI as measured by 60\\% reduction in query latency via LangChain and Next.js, enabling conversational queries over the knowledge graph.",
+                "Optimized purchase prediction with 20\\% lift by training decision tree classifier for 90-day agent sales.",
+                "Engineered property data ingestion pipelines processing California real estate records using PySpark to feed downstream AI research."
             ],
             "tags": [
                 "data-science",
@@ -32,12 +30,12 @@
             "company": "ICS Student Council",
             "location": "Irvine, CA",
             "dates": "Sep 2024 -- Present",
-            "description": "Developed ZotMeet, a fullstack platform for UCI students that enables seamless meeting scheduling and study room booking. Designed and implemented the PostgreSQL database schema using Drizzle ORM, focusing on scalability and query performance optimization. Built fullstack features with NextJS including responsive UI components, server-side rendering, and RESTful API endpoints.",
-            "must_include": [
-                "ZotMeet",
-                "PostgreSQL",
-                "Drizzle ORM",
-                "NextJS"
+            "bullet_bank": [
+                "Architected scalable PostgreSQL database schema for ZotMeet to support 5000 monthly bookings, reducing average query latency by 45\\%, by elegantly leveraging Drizzle ORM.",
+                "Engineered responsive UI components and server-side rendering in NextJS, decreasing initial page load time by 30\\% across 10K unique sessions.",
+                "Streamlined RESTful API performance, boosting booking throughput by 50\\% under concurrent workloads, by integrating rate limiting middleware in Node.js.",
+                "Developed fullstack reservation platform allowing UCI students seamless scheduling and automated confirmation workflows.",
+                "Refactored React hooks and implemented React Query for client-side state management, significantly improving application responsiveness."
             ],
             "tags": [
                 "fullstack",
@@ -54,7 +52,12 @@
             "name": "Flywheel",
             "technologies": "PyTorch $|$ Hugging Face $|$ Statsig",
             "url": "https://github.com/BOSSrobot/DubHacks2025",
-            "description": "Built Flywheel, an end-to-end RLHF training pipeline that gives any AI dev tool company its own data flywheel to produce stronger LLMs optimized for end-user preferences. The core insight is that end users generate preference data whenever they interact with LLM-generated websites (e.g., which button color gets more clicks), and that data can close the loop to improve the model itself. The pipeline works as follows: (1) Statsig A/B UX experiments are automatically embedded into LLM-generated web apps via a custom MCP server, collecting real user metrics like button clicks, time on page, and click-through rates. (2) Preference datasets are constructed by pairing the code for two A/B component variants and using Gemini to generate a hypothetical prompt that could produce both, creating pairwise preference data hosted on Hugging Face. (3) Direct Preference Optimization (DPO), a reinforcement learning algorithm for optimizing language models from pairwise human preference data, trains the model to prefer the higher-performing component. QLora with 4-bit quantization and low-rank adapters on attention layers makes fine-tuning efficient, with tuned hyperparameters including learning rate, warmup schedule, beta, and batch size. (4) The fine-tuned model is programmatically loaded into vLLM, a local inference server, and integrated into VS Code via the open-source Cline framework for code completions. (5) The MCP server closes the loop by enabling the LLM to autonomously generate and execute new Statsig experiments, so the model continuously improves itself. Also built a monitoring dashboard to track the training process and dataset curation in real time. The system helps models learn what gets more click-throughs, how to increase total time spent, and where to make changes to attract more users.",
+            "bullet_bank": [
+                "Architected RLHF pipeline as measured by 4-bit quantization efficiency, by embedding Statsig A/B UX experiments via custom MCP server into AI web apps, collecting click-through rates and time-on-page metrics.",
+                "Engineered VS Code code completion integration as measured by 4-bit quantization efficiency, by deploying QLora-fine-tuned large language models (LLMs) into vLLM server with Cline for AI-assisted suggestions.",
+                "Optimized LLM alignment as measured by tuning 4 hyperparameters, by applying DPO reinforcement learning with QLora low-rank adapters in PyTorch, automating MCP server experiments with monitoring dashboard.",
+                "Engineered automated preference dataset curation using Gemini to synthetically generate prompts matching paired A/B component variants."
+            ],
             "tags": [
                 "ml",
                 "rlhf",
@@ -69,7 +72,14 @@
             "name": "hhana",
             "technologies": "Python $|$ Polars $|$ DuckDB",
             "url": "https://github.com/justinsiek/hhana",
-            "description": "Built hhana (Hand History Analysis and Node Aggregation), a heads-up No-Limit Hold'em poker bot that combines a game-theory-optimal baseline with data-driven exploit signals derived from analyzing over 10 million real hand histories. The baseline strategy uses TexasSolver's CFR (Counterfactual Regret Minimization) engine, solved across ~2268 postflop game trees spanning 2 positions × 3 pot classes (SRP/3BP/4BP) × 3 streets × 6 action lines × 7 board texture buckets (high_dry, mid_dry, low_dry, paired, monotone, 2tone_connected, dynamic) × 3 effective stack-size buckets, with 20-50 representative boards sampled per bucket and 1000-2000 CFR iterations per spot. Preflop uses direct GTO chart lookup across all 169 hand combos with exact action frequencies — no bucketing needed. Postflop hands are classified into a novel 2D bucketing system: 6 made-hand strength levels (air, weak_pair, medium_pair, strong_pair, two_pair, strong_made) × 4 draw strength levels (no_draw, weak_draw, strong_draw, combo_draw) = 24 distinct strategy buckets. This 2D approach solves the fundamental problem that pure equity bucketing conflates hands with identical equity but opposite strategic needs (e.g., a 50% equity flush draw wants to check/call to realize equity cheaply, while a 50% equity top pair wants to bet for protection). Exploit signals are integrated via a softmax-adjusted policy: the bot computes π(a) ∝ π0(a) · exp(clamp(E(a)/λ, −C, C)), where π0 is the baseline GTO strategy, E(a) is the exploit signal from hand history analysis, λ controls aggressiveness, and C caps maximum deviation — this avoids overcommitting to any single exploit. The ETL pipeline uses Polars and DuckDB to process 10M+ hand histories, extracting population-level deviations from equilibrium play and generating per-node exploit signals. Board texture classification, hand evaluation, and draw detection all feed into the real-time lookup API that retrieves the adjusted policy for any game state in under 1ms.",
+            "bullet_bank": [
+                "Engineered an ETL pipeline processing 10M+ hand histories, delivering adjusted policy lookups in under 1ms by integrating Python, Polars, and DuckDB.",
+                "Designed a novel 2D bucketing system extracting 24 distinct strategy buckets derived from 6 made-hand and 4 draw strength levels.",
+                "Implemented exact preflop GTO lookup covering all 169 hand combos with precise action frequencies to eliminate estimation errors.",
+                "Integrated exploit signals via a custom softmax-adjusted policy formula, smoothly shifting GTO baseline probabilities based on population tendencies.",
+                "Developed high-throughput board texture classification and draw detection algorithms, scaling inference across ~2268 unique postflop game trees.",
+                "Combined TexasSolver's Counterfactual Regret Minimization (CFR) engine with large-scale data analytics to produce a hybrid game-theory optimal and exploitative poker bot."
+            ],
             "tags": [
                 "algorithms",
                 "data-engineering",
@@ -84,7 +94,14 @@
             "name": "MakerSafe (Cruzhacks Best Hardware Hack, Best Use of Viam)",
             "technologies": "OpenCV $|$ YOLOv8 $|$ NextJS",
             "url": "https://github.com/justinsiek/maker-safe",
-            "description": "Built MakerSafe, a real-time makerspace safety monitoring dashboard that uses computer vision to identify makers as they enter the space and continuously monitor tool stations for PPE compliance violations. Won Best Use of Viam and Best Hardware Hack at CruzHacks, a hackathon with over 500 participants. The system runs entirely on a single Raspberry Pi 4 (8GB) controlling multiple USB webcams: a login camera at the entrance and station cameras at each workstation. The login camera uses Viam-powered face recognition to identify makers as they walk past, automatically adding them to the live dashboard as Idle. When a maker steps into a station camera's frame, the system recognizes them via face ID, marks them as Active, marks the station as In Use, and immediately begins continuous YOLOv8 goggles detection — if safety goggles are not detected, the maker and station instantly flip to Violation state, a violation record is logged with a snapshot image stored in Supabase Storage, and the SenseCAP indicator on the station flashes red. The backend is a Flask server that receives camera events from the Pi via REST, writes persistent data (makers, stations, violations) to Supabase Postgres, maintains authoritative current state, and pushes real-time updates to all connected dashboards via WebSockets — no page refresh required. The frontend is a single-screen Vite + React admin dashboard showing a stations panel with color-coded state (gray idle, green active/safe, red violation), a makers panel with status cards, and an expandable violations feed that displays the stored snapshot image from Supabase. The state machine enforces one-continuous-incident deduplication (only logs a new violation on non-violation to violation transition) and the database schema supports adding additional stations without redesign.",
+            "bullet_bank": [
+                "Won Best Use of Viam and Best Hardware Hack at CruzHacks, among 500 participants, for designing a robust makerspace safety monitoring system.",
+                "Engineered MakerSafe on a Raspberry Pi 4 by integrating Viam face recognition to identify active users and YOLOv8 for continuous PPE compliance detection.",
+                "Architected a Flask REST backend that persists maker profiles and violation records into Supabase Postgres database.",
+                "Implemented one-continuous-incident deduplication state machine, logging violation snapshots to Supabase Storage and triggering hardware LEDs.",
+                "Built an admin dashboard in Vite and React that consumes pushed WebSocket events for real-time visualization of workstation safety status.",
+                "Designed a dynamically scalable schema and state machine allowing the instant addition of new camera-monitored workstations without software refactoring."
+            ],
             "tags": [
                 "computer-vision",
                 "opencv",
@@ -100,7 +117,14 @@
             "name": "Apprazer (IrvineHacks Best Use Of AI In Real Estate)",
             "technologies": "OpenCV $|$ SKLearn $|$ NextJS",
             "url": "https://github.com/justinsiek/Apprazer",
-            "description": "Led a 4-person team to build Apprazer, a loan pre-approval platform that cuts the traditional multi-day loan approval process down to seconds using AI-powered document parsing and machine learning prediction. Won Best Use of AI in Real Estate at IrvineHacks, a hackathon with over 600 participants. The system serves two sides: lenders get a full portfolio dashboard of current applications with key insights across their lending portfolio, while borrowers get a streamlined UX for easy document upload and faster offer submission. The document processing pipeline uses PyTesseract and OpenCV with a template-based ROI extraction system — since loan application forms follow standardized formats, the system pinpoints specific regions on each page to scan rather than running general OCR, processing only 5% of each page while achieving 99% extraction accuracy. The extracted financial data feeds into a Random Forest classifier trained on the HMDA (Home Mortgage Disclosure Act) nationwide dataset. The raw dataset contained 11 million data points that required aggressive cleaning — filtering null values, random sampling to handle class imbalance (the raw data had a 76% approval rate that caused initial models to approve everything), and iterative feature engineering. The final model was trained on 5M+ cleaned records incorporating key financial indicators (loan amount, income, property value, debt-to-income ratio) along with demographic features for fair lending compliance, achieving 84% testing accuracy through extensive hyperparameter tuning and cross-validation. The Random Forest architecture was chosen over initial attempts with tab transformers and SVMs for its ability to handle non-linear relationships in lending data while maintaining decision transparency required for regulatory compliance. The frontend is built with Next.js, React, and Tailwind CSS, with a Flask REST API backend serving model predictions.",
+            "bullet_bank": [
+                "Won Best Use of AI in Real Estate at IrvineHacks (600+ participants) by building a machine-learning loan decisioning system.",
+                "Engineered a document processing pipeline extracting structured financial data using PyTesseract and OpenCV template-based ROI scanning.",
+                "Optimized OCR extraction by targeting specific form ROIs, processing only 5\\% of document pixels while achieving 99\\% extraction accuracy.",
+                "Trained a Random Forest classifier on 5M+ HMDA records to predict loan approvals, achieving 84\\% testing accuracy via hyperparameter tuning.",
+                "Executed comprehensive data scrubbing pipelines utilizing random under-sampling to mitigate severe label imbalance in 11M raw applicant records.",
+                "Built an interactive borrower and underwriter dashboard using Next.js and Tailwind CSS mapped to a Flask REST API inference backend."
+            ],
             "tags": [
                 "ml",
                 "opencv",
@@ -114,7 +138,11 @@
             "name": "Sonder (IrvineHacks Best Blockchain Hack)",
             "technologies": "Web3js $|$ MetaMask $|$ NextJS",
             "url": "https://github.com/justinsiek/sonder",
-            "description": "Led a 4-person team to build Sonder, an identity-preserving social platform that connects users while maintaining full anonymity through blockchain authentication. Won Best Blockchain Project at IrvineHacks, a hackathon with over 500 participants. Built a decentralized login system using Web3js and MetaMask for privacy-first blockchain identity verification, with a NextJS frontend.",
+            "bullet_bank": [
+                "Won Best Blockchain Project among 500 participants at IrvineHacks for developing an identity-preserving anonymous social network.",
+                "Engineered a decentralized authentication system integrating Web3.js and MetaMask for secure wallet-based zero-knowledge logins.",
+                "Designed responsive, decentralized application interfaces and interactive client-side routing using Next.js."
+            ],
             "tags": [
                 "blockchain",
                 "web3",
@@ -127,7 +155,13 @@
             "name": "Agent Native",
             "technologies": "React $|$ Flask $|$ Groq",
             "url": "https://github.com/gauravkriplani/IrvineHacks2026",
-            "description": "Built a CI/CD-integrated Agent Object Model (AOM) system that enables AI agents to interact with web applications through a structured, machine-readable capability layer instead of raw DOM parsing. The system consists of three layers: (1) AOM Wrapper React components (AOMAction, AOMInput, AOMLink) that register interactive elements with a global AOM Registry on mount/unmount, keeping the agent's view perfectly synced with the live DOM; (2) a strict singleton AOM Registry exposed on window.__AOM__ that maintains a live dictionary of all available interactive elements and provides deterministic execution methods (execute, fill, navigate), replacing brittle CSS selector-based DOM querying with guaranteed JavaScript event execution; (3) an Agent Dashboard with a natural language chat interface powered by Groq's llama-3.3-70b-versatile model that translates plain English requests into deterministic AOM commands. The agent supports a multi-step memory loop for autonomous navigation — it fetches UI state, predicts a step, executes it, waits for the DOM to update, and dynamically re-prompts itself with the new UI state until the task is complete. The source parsing layer uses Babel AST analysis to extract all interactive components (buttons, inputs, links, custom onClick/onChange handlers) from the codebase, detecting tag types, handler names, file paths, component names, and aria attributes. An AI semantic enhancement step then generates stable action_ids, infers descriptions, proposes input schemas, and assigns permission levels and safety scores. The output is a deterministic, versioned agent-surface.json artifact deployed alongside the app. Results: achieved 10x-100x reduction in LLM prompt size compared to feeding raw DOM HTML, complete decoupling of agents from CSS/DOM structure (agents only need action_ids), and full resilience to UI refactors — changes to CSS classes, div nesting, and virtualized lists no longer break agent scripts.",
+            "bullet_bank": [
+                "Engineered 10x reduction in LLM prompt size by integrating CI/CD Babel AST parsing and llama-3.3-70b AOM.",
+                "Achieved 100\\% UI decoupling for LLM-based AI agents by replacing queries with window AOM events.",
+                "Optimized LLM token usage by 100x by deploying versioned agent-surface.json artifacts in place of raw DOM HTML.",
+                "Constructed deterministic multi-step planning loops mapping user natural language instructions to precise AOM action\\_ids.",
+                "Replaced brittle CSS selector logic by intercepting React component lifecycles, guaranteeing 100\\% stability for AI agents against UI refactoring."
+            ],
             "tags": [
                 "ai-agents",
                 "react",

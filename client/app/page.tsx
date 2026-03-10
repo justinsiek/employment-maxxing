@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 interface Resume {
   id: string;
@@ -16,13 +15,12 @@ interface QueueItem {
   job_company: string;
   job_title: string;
   job_description: string;
-  status: 'queued' | 'generating' | 'completed' | 'error';
+  status: 'queued' | 'generating' | 'cancelling' | 'completed' | 'error' | 'cancelled';
   message?: string;
   resume_id?: string;
 }
 
 export default function Dashboard() {
-  const router = useRouter();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,7 +32,6 @@ export default function Dashboard() {
 
   // Queue state
   const [queue, setQueue] = useState<QueueItem[]>([]);
-  const isGenerating = queue.some(q => q.status === 'generating');
 
   useEffect(() => {
     fetchResumes();
@@ -76,76 +73,83 @@ export default function Dashboard() {
     }
   };
 
-  const handleQueueJob = (e: React.FormEvent) => {
+  // Fetch the current queue state every second
+  useEffect(() => {
+    const pollInterval = setInterval(async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:5001/api/jobs");
+        const data = await res.json();
+
+        // Check if any job newly completed to trigger a resume list refresh
+        setQueue(prevQueue => {
+          const newQ: QueueItem[] = data.jobs || [];
+          const newlyCompleted = newQ.some(nq => nq.status === 'completed' && !prevQueue.find(pq => pq.id === nq.id && pq.status === 'completed'));
+          if (newlyCompleted) {
+            fetchResumes();
+          }
+          return newQ;
+        });
+      } catch (err) {
+        console.error("Failed to fetch jobs queue:", err);
+      }
+    }, 1000);
+
+    return () => clearInterval(pollInterval);
+  }, []);
+
+  const handleQueueJob = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!jobDescription.trim()) {
       setFormError("Job description is required");
       return;
     }
     setFormError(null);
-    const newJob: QueueItem = {
-      id: crypto.randomUUID(),
-      job_company: jobCompany || "Unknown Company",
-      job_title: jobTitle || "Software Engineer",
-      job_description: jobDescription,
-      status: 'queued'
-    };
-    setQueue(prev => [...prev, newJob]);
-    // reset form for the next job
-    setJobTitle("");
-    setJobCompany("");
-    setJobDescription("");
-  };
-
-  useEffect(() => {
-    const active = queue.find(q => q.status === 'generating');
-    if (!active) {
-      const next = queue.find(q => q.status === 'queued');
-      if (next) {
-        startJob(next);
-      }
-    }
-  }, [queue]);
-
-  const startJob = (job: QueueItem) => {
-    setQueue(prev => prev.map(q => q.id === job.id ? { ...q, status: 'generating', message: 'Starting generation process...' } : q));
 
     try {
-      const url = new URL("http://127.0.0.1:5001/api/generate/stream");
-      url.searchParams.append("job_title", job.job_title);
-      url.searchParams.append("job_company", job.job_company);
-      url.searchParams.append("job_description", job.job_description);
+      const res = await fetch("http://127.0.0.1:5001/api/jobs", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          job_company: jobCompany || "Unknown Company",
+          job_title: jobTitle || "Software Engineer",
+          job_description: jobDescription
+        })
+      });
 
-      const eventSource = new EventSource(url.toString());
+      if (!res.ok) throw new Error("Failed to queue job");
 
-      eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-
-        if (data.type === "progress") {
-          setQueue(prev => prev.map(q => q.id === job.id ? { ...q, message: data.message } : q));
-        } else if (data.type === "complete") {
-          eventSource.close();
-          setQueue(prev => prev.map(q => q.id === job.id ? { ...q, status: 'completed', message: 'Complete!', resume_id: data.data.id } : q));
-          fetchResumes(); // Silent refresh of sidebar
-        } else if (data.type === "error") {
-          eventSource.close();
-          setQueue(prev => prev.map(q => q.id === job.id ? { ...q, status: 'error', message: data.message || "An error occurred." } : q));
-        }
-      };
-
-      eventSource.onerror = () => {
-        eventSource.close();
-        setQueue(prev => prev.map(q => q.id === job.id ? { ...q, status: 'error', message: "Connection lost." } : q));
-      };
-
-    } catch (err: any) {
+      // Reset form
+      setJobTitle("");
+      setJobCompany("");
+      setJobDescription("");
+    } catch (err) {
       console.error(err);
-      setQueue(prev => prev.map(q => q.id === job.id ? { ...q, status: 'error', message: err.message || "An error occurred." } : q));
+      setFormError("Failed to add job to the queue. Please try again.");
     }
   };
 
-  const handleDismissJob = (id: string) => {
-    setQueue(prev => prev.filter(q => q.id !== id));
+  const handleDismissJob = async (id: string) => {
+    try {
+      await fetch(`http://127.0.0.1:5001/api/jobs/${id}`, {
+        method: 'DELETE'
+      });
+      setQueue(prev => prev.filter(q => q.id !== id));
+    } catch (err) {
+      console.error("Failed to dismiss job:", err);
+    }
+  };
+
+  const handleCancelJob = async (id: string) => {
+    try {
+      await fetch(`http://127.0.0.1:5001/api/jobs/${id}/cancel`, {
+        method: 'POST'
+      });
+      // The polling loop will pick up the new "cancelling" or "cancelled" state
+    } catch (err) {
+      console.error("Failed to cancel job:", err);
+    }
   };
 
   return (
@@ -203,7 +207,7 @@ export default function Dashboard() {
           <div className="mb-8">
             <h2 className="text-3xl font-bold tracking-tight mb-2">Create New Resume</h2>
             <p className="text-zinc-500 dark:text-zinc-400">
-              Paste a job description below. We'll queue it up, rewrite your bullets to match, and compile a tailored LaTeX PDF automatically.
+              Paste a job description below. We&apos;ll queue it up, rewrite your bullets to match, and compile a tailored LaTeX PDF automatically.
             </p>
           </div>
 
@@ -220,7 +224,7 @@ export default function Dashboard() {
                       </div>
                       <div className="text-sm mt-1.5 flex items-center gap-2">
                         {job.status === 'queued' && <span className="text-zinc-500 dark:text-zinc-400">Waiting in queue...</span>}
-                        {job.status === 'generating' && (
+                        {(job.status === 'generating' || job.status === 'cancelling') && (
                           <>
                             <svg className="animate-spin h-3.5 w-3.5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -230,6 +234,7 @@ export default function Dashboard() {
                           </>
                         )}
                         {job.status === 'error' && <span className="text-red-600 dark:text-red-400 font-medium">Error: {job.message}</span>}
+                        {job.status === 'cancelled' && <span className="text-zinc-600 dark:text-zinc-400 font-medium">Cancelled by user.</span>}
                         {job.status === 'completed' && <span className="text-green-600 dark:text-green-500 font-medium">Successfully generated!</span>}
                       </div>
                     </div>
@@ -240,7 +245,12 @@ export default function Dashboard() {
                           Open Editor
                         </Link>
                       )}
-                      {(job.status === 'completed' || job.status === 'error' || job.status === 'queued') && (
+                      {(job.status === 'queued' || job.status === 'generating') && (
+                        <button onClick={() => handleCancelJob(job.id)} className="text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 px-4 py-2 rounded-md transition-colors">
+                          Cancel
+                        </button>
+                      )}
+                      {(job.status === 'completed' || job.status === 'error' || job.status === 'cancelled') && (
                         <button onClick={() => handleDismissJob(job.id)} className="p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors" title="Dismiss">
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
